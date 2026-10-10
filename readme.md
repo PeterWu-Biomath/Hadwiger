@@ -4,8 +4,8 @@ Personal reading notes by Pei Wu on the manuscript *A counterexample to Hadwiger
 
 ## Contents
 
-- `Hardwiger.tex`: the editable LaTeX source.
-- `Hardwiger.pdf`: the compiled notes; regenerate after changing the source.
+- `Hadwiger.tex`: the editable LaTeX source.
+- `Hadwiger.pdf`: the compiled notes; regenerate after changing the source.
 - The summary defines the connected matching number and explains how a small connected matching number gives a clique-minor bound below the chromatic number.
 - Appendix A discusses the counting proof of Proposition 3.5 using singleton, two-vertex, and larger branch sets.
 
@@ -23,10 +23,10 @@ The notes use `G` for the triangle-free hole graph and its complement for the pr
 
 ## Editing and compilation
 
-Edit `Hardwiger.tex` and compile it with the Codex LaTeX editor or a local LaTeX installation. With a local installation, run the following command twice from this folder to resolve references:
+Edit `Hadwiger.tex` and compile it with the Codex LaTeX editor or a local LaTeX installation. With a local installation, run the following command twice from this folder to resolve references:
 
 ```sh
-pdflatex Hardwiger.tex
+pdflatex Hadwiger.tex
 ```
 
 The `.aux`, `.log`, and `.synctex.gz` files are generated during compilation.

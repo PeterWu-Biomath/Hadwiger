@@ -1,0 +1,139 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{microtype}
+\usepackage{geometry}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{remark}{Remark}
+
+\newtheorem{defn}[theorem]{Definition}
+\newcommand{\VCdim}{\operatorname{VCdim}}
+
+\newcommand{\cm}{\operatorname{cm}}
+
+
+\title{A note on Open AI's "A counterexample to Hadwiger’s conjecture"}
+\author{Pei Wu}
+\date{\today}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section{Summary}
+	In the note they construct a triangle-free graph $G$ that has many $4$-cycles, such that for the complement graph we has its independence number $\alpha(\bar G)=2$ and  connected matching number $\cm (\bar G)< m/100$ where $m$ is number of vertices. The connected matching number is defined as follows:
+	
+	\begin{defn}
+		A matching $M$ in a graph $H$ is called a \emph{connected matching} if every two distinct edges of $M$ are joined by an edge of $H$: for all distinct $e,f\in M$, there exist $u\in V(e)$ and $v\in V(f)$ such that $uv\in E(H)$. The \emph{connected matching number} is
+	\[
+	\cm(H)=\max\bigl\{|M|: M\text{ is a connected matching in }H\bigr\}.
+	\]
+	\end{defn}
+	
+	The complement graph provides a counterexample to Hadwiger's conjecture, which asserts that $\chi(H)\le h(H)$, where $h(H)$ is the largest integer $t$ such that $H$ contains a $K_t$ minor. Indeed, Proposition~3.5 of the paper (proved in Appendix~\ref{app:minor-bound}) gives
+	\[
+	h(H)\le \frac{|V(H)|+4\cm(H)+2}{3}.
+	\]
+	Applying this to $H=\bar G$, and using $\alpha(\bar G)\le 2$ so that every color class has at most two vertices, we obtain, for $m$ large enough,
+	\[
+	h(\bar G)
+	\le \frac{m+4\cm(\bar G)+2}{3}
+	< \frac{26m}{75}+\frac{2}{3}
+	< \frac{m}{2}
+	\le \chi(\bar G).
+	\]
+	Thus $h(\bar G)<\chi(\bar G)$, contrary to Hadwiger's conjecture.
+\section{The construction}
+We retain the notation of the summary: $G$ is the graph we constructed, and $H=\bar G$ is the proposed counterexample. All vector spaces and matrix operations below are over $\mathbb F_2$.
+
+\subsection{Fixed coefficient spaces}
+Fix the parameters $g,b,j_*,h,n,N$ as in Section~2 of the manuscript, with $g$ odd and $N=M_0n$. Let
+\[
+I=\mathbb Z/g\mathbb Z,\qquad \mathcal E=\binom{I}{2},
+\qquad I_d=\{d+1,\ldots,d+(g-1)/2\}\subset I.
+\]
+The elements of $I$ are tags and those of $\mathcal E$ are components. A Boolean point has a selector $s\in\mathbb F_2^b$ and base coordinates $z$ in $g^2+3$ blocks of $n$ bits, named $O_{d,t}$ ($d,t\in I$), $S$, $\#$, and $Z$. Put
+\[
+p_* = \sum_{j=0}^{j_*}\binom{b}{j},\qquad
+B=\mathbb F_2^{p_*}\otimes\mathbb F_2^{1+(g^2+3)n}.
+\]
+If $p_s$ is the vector of evaluations of all squarefree selector monomials of degree at most $j_*$, define
+\[
+v(s,z)=p_s\otimes(1,z),\qquad w(s,z)=v(s,z)v(s,z)^T.
+\]
+For each tag $\ell$, let $W_\ell$ be the span of these point moments subject to $O_{d,t}=0$ whenever $\ell\notin I_d$. Define the cut-profile space
+\[
+X=\left\{(x_{\{\ell,\ell'\}})_{\{\ell,\ell'\}\in\mathcal E}:
+x_{\{\ell,\ell'\}}=w_\ell+w_{\ell'},\quad w_\ell\in W_\ell\right\}.
+\]
+Thus each component $x_e$ is a matrix on $B$. The manuscript fixes a linear functional $a\in X^*$, a symmetric bilinear form $T$ on $X$, and a prescribed self-frame matrix $E$ on $B$ (Equations~(2.7)--(2.12)). Their detailed tester and mixing formulas are additional fixed ingredients; none is sampled separately for a graph vertex. Write $d_B=\dim B$ and $r(\lambda)=a+T(\lambda,\cdot)$.
+
+\subsection{The random variable attached to a vertex}
+For each component $e\in\mathcal E$, take common ambient spaces $V_e^+=V_e^-=\mathbb F_2^N$, paired by the dot product. A raw vertex $o$ is the tuple
+\[
+o=(P_{o,e},Q_{o,e},X_{o,e},Y_{o,e})_{e\in\mathcal E},
+\]
+where $P_{o,e},Q_{o,e}$ are $N\times d_B$ matrices and $X_{o,e},Y_{o,e}$ are $N\times h$ matrices. For each component, sample uniformly among the quadruples satisfying
+\begin{align*}
+[P_{o,e}\;X_{o,e}]&\text{ and }[Q_{o,e}\;Y_{o,e}]\text{ have full column rank},\\
+P_{o,e}^TQ_{o,e}&=E,\\
+X_{o,e}^TQ_{o,e}&=0,\qquad P_{o,e}^TY_{o,e}=0.
+\end{align*}
+There is no prescribed value of $X_{o,e}^TY_{o,e}$. Components are sampled independently; the four matrices within a component are constrained and hence need not be independent. Denote this finite raw vertex space by $\Omega_n$ and its probability law by $\mu_n$. The frame matrices $X_{o,e}$ should not be confused with the witness space $X$.
+
+Set $V=\bigoplus_{e\in\mathcal E}V_e^+\otimes V_e^-$. Identifying tensors with matrices, a raw vertex determines
+\[
+U_o(x)=(P_{o,e}x_eQ_{o,e}^T)_{e\in\mathcal E},\qquad
+u_o(\xi)=\sum_{e\in\mathcal E}\langle Y_{o,e}X_{o,e}^T,\xi_e\rangle,
+\]
+where $\langle A,B\rangle=\operatorname{Tr}(A^TB)$ is the entrywise pairing. The rank conditions make $U_o$ injective.
+
+\subsection{Sampling the graph and declaring holes}
+Sample $m$ independent raw vertices $o_1,\ldots,o_m$ with law $\mu_n$, where $m$ is the sample size prescribed in Equation~(2.4) of the manuscript. The graph vertices are the positions $1,\ldots,m$, so repeated raw vertices are allowed.
+
+For distinct positions $i,j$, declare a hole if there exist witnesses $\lambda_i,\lambda_j\in X$ satisfying
+\begin{align*}
+U_{o_i}\lambda_i&=U_{o_j}\lambda_j,\\
+u_{o_j}\circ U_{o_i}&=r(\lambda_i),\qquad
+u_{o_i}\circ U_{o_j}=r(\lambda_j),\\
+a(\lambda_i)+a(\lambda_j)&=1.
+\end{align*}
+The middle equations are equalities of linear functionals on all of $X$. Put $ij\in E(G)$ precisely when there is a hole, and $ij\in E(H)$ otherwise. The hole relation is symmetric, loopless, and triangle-free by Lemma~2.2 of the manuscript. Consequently $G$ is triangle-free and $\alpha(H)\le2$, even if sampled raw vertices repeat.
+
+\begin{remark}
+The initial random variable is the tuple of frame matrices $o$, not a Boolean point $(s,z)$. Once $o_1,\ldots,o_m$ are sampled, every graph edge is determined by the witness criterion. Boolean points vary when constructing witnesses from point moments; sampling such point parameters with the frames fixed is called a query in the manuscript.
+\end{remark}
+
+\appendix
+\section{The clique-minor bound (Proposition 3.5)}
+\label{app:minor-bound}
+
+\begin{proposition}
+For every finite nonempty graph $H$ with $m$ vertices,
+\[
+h(H)\le \frac{m+4\cm(H)+2}{3}.
+\]
+\end{proposition}
+
+\begin{proof}
+Write $c=\cm(H),\,b=h(H)$. Thus that there are $b$ pairwise disjoint, nonempty connected vertex sets, with an edge joining every pair of sets.
+These sets are the branch sets of a $K_b$ minor. Let $s$ be the number of sets with one vertex and $e$ be the number of sets with two vertices.
+
+Firstly $c>e+\frac{s-1}{2}$:
+Each two-vertex branch set has an edge. And pairs of singleton branches supports an edge, the set of them is a connected matching, so we have the desired inequality. 
+
+Then every remaining branch set has at least three vertices. Since the branch sets are disjoint,
+\[
+m\ge s+2e+3(b-s-e)=3b-2s-e.
+\]
+Combining two inequality give use the contradiction.
+\end{proof}
+\end{document}
