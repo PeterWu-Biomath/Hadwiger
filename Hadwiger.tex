@@ -29,7 +29,7 @@
 	\maketitle
 	
 	\section{Summary}
-	In the note they construct a triangle-free graph $G$ that has many $4$-cycles, such that for the complement graph we has its independence number $\alpha(\bar G)=2$ and  connected matching number $\cm (\bar G)< m/100$ where $m$ is number of vertices. The connected matching number is defined as follows:
+	The manuscript constructs a triangle-free graph $G$ whose complement $H=\bar G$ satisfies $\alpha(H)\le2$ and $\cm(H)<m/100$, where $m$ is the number of vertices. The connected matching number is defined as follows:
 	
 	\begin{defn}
 		A matching $M$ in a graph $H$ is called a \emph{connected matching} if every two distinct edges of $M$ are joined by an edge of $H$: for all distinct $e,f\in M$, there exist $u\in V(e)$ and $v\in V(f)$ such that $uv\in E(H)$. The \emph{connected matching number} is
@@ -86,19 +86,52 @@ Then sum six equations by permuting $i,j,k$. For fixed $j$, the two terms on the
 \]
 whereas the left-hand side is zero, a contradiction.
 \end{proof}
+\subsection{Construction of $U$ and $u$}\label{sec:frames}
+Write $\operatorname{Mat}_{m,n}(\mathbb F_2)$ for the space of $m\times n$ binary matrices, and $\operatorname{Mat}_n(\mathbb F_2)=\operatorname{Mat}_{n,n}(\mathbb F_2)$. Fix a finite index set $\mathcal E$, positive integers $N,d_B,h$ with $N\ge2(d_B+h)$, and a matrix $E\in\operatorname{Mat}_{d_B}(\mathbb F_2)$, to be specified later. Take
+\[
+V\subseteq\bigoplus_{e\in\mathcal E}\operatorname{Mat}_{d_B}(\mathbb F_2)
+\quad\text{a linear subspace},\qquad
+W=\bigoplus_{e\in\mathcal E}\operatorname{Mat}_N(\mathbb F_2).
+\]
+For $x\in V$, write $x=(x_e)_{e\in\mathcal E}$, so $x_e\in\operatorname{Mat}_{d_B}(\mathbb F_2)$.
 
+At each component $e$, consider quadruples
+\[
+P_e,Q_e\in\operatorname{Mat}_{N,d_B}(\mathbb F_2),\qquad
+X_e,Y_e\in\operatorname{Mat}_{N,h}(\mathbb F_2)
+\]
+satisfying
+\begin{align*}
+	[P_e\;X_e]&\text{ and }[Q_e\;Y_e]\text{ have full column rank},\\
+	P_e^TQ_e&=E,\\
+	X_e^TQ_e&=0,\qquad P_e^TY_e=0.
+\end{align*}
+The condition $N\ge2(d_B+h)$ ensures there is enough admissible quadruples. Let $\mathcal{O}$ be the set of tuples $o=(P_{o,e},Q_{o,e},X_{o,e},Y_{o,e})_{e\in\mathcal E}$ of admissible quadruples. Define a probability law on $\mathcal{O}$ by sampling uniformly at each component, independently across components. 
+
+For matrices of the same size, define $\langle A,B\rangle=\operatorname{Tr}(A^TB)$. Each $o\in\mathcal O$ determines $U_o:V\to W$ and $u_o\in W^*$ by
+\[
+U_o(x)=(P_{o,e}x_eQ_{o,e}^T)_{e\in\mathcal E},\qquad
+u_o(\xi)=\sum_{e\in\mathcal E}\langle Y_{o,e}X_{o,e}^T,\xi_e\rangle.
+\]
+for $x\in V$ and $\xi\in W$. Each image component $P_{o,e}x_eQ_{o,e}^T$ belongs to $\operatorname{Mat}_N(\mathbb F_2)$. Left inverses of $P_{o,e}$ and $Q_{o,e}$ recover $x_e$ from that component, so $U_o$ is injective. Thus these maps provide the vertex data required in Section~\ref{sec:2.1}; the particular subspace $V$ and the forms $a,T$ will be specified below.
+
+Moreover,
+\[
+u_o(U_o(x))=\sum_{e\in\mathcal E}
+\operatorname{Tr}\bigl(X_{o,e}Y_{o,e}^TP_{o,e}x_eQ_{o,e}^T\bigr)=0,
+\]
+since $Y_{o,e}^TP_{o,e}=0$. 
 \subsection{Parameters}
-Starting from the number of vertices $m$ that is large enough. The manuscript fixes
+The only asymptotic parameter is $n$. The manuscript fixes
 \[
 C_0=1000,\qquad g=10^9+1,\qquad D=4C_0g,\qquad M=2^{1000}.
 \]
-And there are constants $b,j_*,J,r_0,M_0$ are chosen in Appendix~A of the manuscript, independently of $m$ but not sepcified.
-
-Set
+The constants $b,j_*,J,r_0,M_0$ are chosen in the dependency order of Appendix~A of the manuscript, before $n$ tends to infinity. Their numerical values are not specified. Set
 \[
 h=1000r_0,\qquad N=M_0n,\qquad m=2^{C_0gN}.
 \]
-So we will use $n\rightarrow\infty$ as pivotal variable afterwards.
+Here $M$ is a density bound used in the distribution theorem, whereas $M_0$ scales the ambient dimension. Choose $M_0$ sufficiently large to satisfy the dimension and counting requirements, including $N\ge2(d_B+h)$ for all sufficiently large $n$. We take $n\ge2r_0$ and $j_*\ge1$.
+
 \subsection{Boolean moment spaces}
 
 Let
@@ -119,53 +152,37 @@ Thus $z$ has $g^2+3$ blocks, each containing $n$ bits; $z_{A,k}$ denotes the $k$
 Write
 \[
 p_* =\sum_{j=0}^{j_*}\binom bj,\qquad
-B=\mathbb F_2^{p_*}\otimes\mathbb F_2^{1+(g^2+3)n}.
+B=\mathbb F_2^{p_*}\otimes\mathbb F_2^{1+(g^2+3)n},\qquad d_B=\dim B.
 \]
 Let $p(s)\in\mathbb F_2^{p_*}$ be the bit vector listing the evaluations at $s$ of all squarefree selector monomials of degree at most $j_*$, in a fixed order. Define the evaluation vector and its point moment by
 \[
-v(s,z)=p(s)\otimes(1,z),\qquad w(s,z)=v(s,z)\otimes v(s,z).
+v(s,z)=p(s)\otimes(1,z),\qquad w(s,z)=v(s,z)v(s,z)^T\in\operatorname{Mat}_{d_B}(\mathbb F_2).
 \]
-Let $W\subseteq B\otimes B$ be the span of all point moments. For $\ell\in I$, let $W_\ell$ be the span of those point moments whose base values satisfy $O_{d,t}=0$ whenever $\ell\notin I_d$. Let $W_*$ be the span obtained by setting all $O$-blocks to zero.
+Identify $B\otimes B$ with $\operatorname{Mat}_{d_B}(\mathbb F_2)$ using the fixed coefficient basis. Let $\mathcal M\subseteq\operatorname{Mat}_{d_B}(\mathbb F_2)$ be the span of all point moments. For $\ell\in I$, let $\mathcal M_\ell$ be the span of those point moments whose base values satisfy $O_{d,t}=0$ whenever $\ell\notin I_d$. Let $\mathcal M_*$ be the span obtained by setting all $O$-blocks to zero.
 
 Define the linear cut-profile map
 \[
 \begin{aligned}
-f:\bigoplus_{\ell\in I}W_\ell&\longrightarrow\bigoplus_{e\in\mathcal E}W,\\
+f:\bigoplus_{\ell\in I}\mathcal M_\ell&\longrightarrow\bigoplus_{e\in\mathcal E}\mathcal M,\\
 (w_\ell)_{\ell\in I}&\longmapsto
 \bigl(w_\ell+w_{\ell'}\bigr)_{\{\ell,\ell'\}\in\mathcal E}.
 \end{aligned}
 \]
-The \emph{witness space} is $X=\operatorname{im}f$. A tuple $(w_\ell)_{\ell\in I}$ is a representation of $x\in X$ if $f((w_\ell)_{\ell\in I})=x$. By Lemma~2.3 of the manuscript,
+Take the witness space in Sections~\ref{sec:2.1} and~\ref{sec:frames} to be $V=\operatorname{im}f$. A tuple $(w_\ell)_{\ell\in I}$ is a representation of $x\in V$ if $f((w_\ell)_{\ell\in I})=x$. By Lemma~2.3 of the manuscript,
 \[
-\ker f=\{(w_*)_{\ell\in I}:w_*\in W_*\},
+\ker f=\{(w_*)_{\ell\in I}:w_*\in \mathcal M_*\},
 \]
-that is, two representations of the same $x$ differ by a constant tuple with value in $W_*$.
+that is, two representations of the same $x$ differ by a constant tuple with value in $\mathcal M_*$.
 
-\subsection{The $V$, $W$, $T$ and $a$}
-We can now identify the two vector spaces from Section~\ref{sec:2.1}. To distinguish their roles from the notation used in the concrete construction, write them as $V_{\S 2.1}$ and $W_{\S 2.1}$:
-\[
-V_{\S 2.1}=X=\operatorname{im}f,\qquad
-W_{\S 2.1}=\bigoplus_{e\in\mathcal E}V_e^+\otimes V_e^-,
-\qquad V_e^\pm=\mathbb F_2^N.
-\]
-The first is the witness space: its elements are tuples of $d_B\times d_B$ matrices satisfying the cut-profile condition, where $d_B=\dim B$. The second is the ambient space: its elements are tuples of $N\times N$ matrices. A vertex $o$ will determine an embedding
-\[
-U_o:V_{\S 2.1}\longrightarrow W_{\S 2.1},\qquad
-x\longmapsto(P_{o,e}x_eQ_{o,e}^T)_{e\in\mathcal E},
-\]
-using the frame matrices defined in the next subsection. 
+\subsection{The functional $a$, the bilinear form $T$, and the matrix $E$}
+The witness space is now fixed as $V=\operatorname{im}f$, and the ambient space remains $W=\bigoplus_{e\in\mathcal E}\operatorname{Mat}_N(\mathbb F_2)$ from Section~\ref{sec:frames}. We next specify $a\in V^*$, a symmetric bilinear form $T$ on $V$, and the matrix $E$ used to constrain the frames.
 
-\begin{remark}
-	The $W_{\S 2.1}$ is not the moment space $W\subseteq B\otimes B$ defined above; the ambient space is denoted by $V$ later in the concrete construction.
-
-\end{remark}
-So here we are ready to define $T\in Sym^2(X^{*})$ and $a\in X^*$.
 Define \emph{linear testers} on moments by selecting ordered matrix entries:
 \begin{align*}
 \eta_{d,t}(w(s,z))&=\sum_{\rho=1}^{r_0}z_{O_{d,t},2\rho-1}z_{O_{d,t},2\rho},\,d,t\in I\\
 \eta_S(w(s,z))&=\sum_{\rho=1}^{r_0}z_{S,2\rho-1}z_{S,2\rho}.
 \end{align*}
-Put $\eta_O=\sum_{d,t}\eta_{d,t}$ and $\eta=\eta_O+\eta_S$. They should be understood as taking value in $W^*$. 
+Put $\eta_O=\sum_{d,t}\eta_{d,t}$ and $\eta=\eta_O+\eta_S$. These are elements of $\mathcal M^*$ and take values in $\mathbb F_2$. 
 
 For a cut profile $x$ represented by $(w_\ell)$, set
 \[
@@ -173,7 +190,7 @@ a_t(x)=\sum_{\ell,d}\eta_{d,t}(w_\ell),\qquad
 a(x)=\sum_t a_t(x),\qquad
 b_t(x)=\sum_{\ell\ne t}\eta_S(w_\ell).
 \]
-These functionals do not depend on the representation: the $O$-testers vanish on $W_*$, and a constant change contributes $(g-1)\eta_S(w_*)=0$ to $b_t$.
+These functionals do not depend on the representation: the $O$-testers vanish on $\mathcal M_*$, and a constant change contributes $(g-1)\eta_S(w_*)=0$ to $b_t$.
 
 Define
 \[
@@ -188,40 +205,21 @@ T_1(x,y)&=B_1(x,y)+B_1(y,x),\qquad T=T_0+T_1.
 \end{align*}
 Then $T$ is symmetric and $T(x,x)=a(x)$. This specifies $r(\lambda)=a+T(\lambda,\cdot)$ in the edge definition.
 
-The prescribed self-frame matrix $E$ is also fixed. Let $E_\eta$ be the sum of the ordered tester matrices, so $\langle E_\eta,w\rangle=\eta(w)$ for $w\in W$. Choose $n\times n$ matrices $M_1,\ldots,M_b$ along with the mixers as in Lemma~5.5, and define $E_\#$ by
+The matrix $E\in\operatorname{Mat}_{d_B}(\mathbb F_2)$ prescribes $P_{o,e}^TQ_{o,e}=E$ in Section~\ref{sec:frames}. Let $E_\eta$ be the sum of the ordered tester matrices, so $\langle E_\eta,w\rangle=\eta(w)$ for $w\in\mathcal M$. Choose $M_1,\ldots,M_b\in\operatorname{Mat}_n(\mathbb F_2)$ along with the mixers as in Lemma~5.5, and define $E_{\#}$ by
 \[
 v(s,z)^TE_\#v(s',z')=
 \sum_{\rho=1}^b(s_\rho+s'_\rho)z_\#^TM_\rho z'_\#.
 \]
 This is bilinear on $B$ since $j_*\ge1$. Set $E=E_\eta+E_\#$. Its additional term vanishes on coincident point inputs, so
 \[
-\langle E,w\rangle=\eta(w)\qquad(w\in W).
+\langle E,w\rangle=\eta(w)\qquad(w\in\mathcal M).
 \]
 The $Z$-block does not occur in $E$. The mixers and the matrices $M_\rho$ are chosen once for each sufficiently large $n$, before graph sampling. Their existence with the required rank properties is supplied by Lemma~5.5; arbitrary choices need not give the connected-matching bound.
 
-\subsection{Random frames: the raw vertex law}
-For each $e\in\mathcal E$, take common ambient spaces $V_e^+=V_e^-=\mathbb F_2^N$, paired by the dot product. Write $d_B=\dim B$. A raw vertex, also called an orientation, is a tuple
-\[
-o=(P_{o,e},Q_{o,e},X_{o,e},Y_{o,e})_{e\in\mathcal E},
-\]
-where $P_{o,e},Q_{o,e}$ are $N\times d_B$ matrices and $X_{o,e},Y_{o,e}$ are $N\times h$ matrices. At each component sample uniformly among all quadruples satisfying
-\begin{align*}
-[P_{o,e}\;X_{o,e}]&\text{ and }[Q_{o,e}\;Y_{o,e}]\text{ have full column rank},\\
-P_{o,e}^TQ_{o,e}&=E,\\
-X_{o,e}^TQ_{o,e}&=0,\qquad P_{o,e}^TY_{o,e}=0.
-\end{align*}
-No value is prescribed for $X_{o,e}^TY_{o,e}$. The frame set is nonempty when $N\ge2(d_B+h)$, as ensured by the choice of $M_0$. Components are sampled independently; the four matrices within a component are constrained and hence need not be independent. Let $\Omega_n$ denote this finite raw vertex space and $\mu_n$ its law. The frame matrix $X_{o,e}$ is distinct from the witness space $X$.
+\subsection{The vertex law}
+With $\mathcal E,d_B,N,h,V,a,T,E$ now specified, apply Section~\ref{sec:frames}. Let $\mathcal O_n$ be the set of admissible frame tuples and let $\mu_n$ be its product uniform law across components. An element $o\in\mathcal O_n$ determines the maps $U_o:V\to W$ and $u_o\in W^*$ already defined there. In the general scheme of Section~\ref{sec:2.1}, take $\Omega=\mathcal O_n$.
 
-Set
-\[
-V=\bigoplus_{e\in\mathcal E}V_e^+\otimes V_e^-.
-\]
-Identifying tensors with matrices, define
-\[
-U_o(x)=(P_{o,e}x_eQ_{o,e}^T)_{e\in\mathcal E},\qquad
-u_o(\xi)=\sum_{e\in\mathcal E}\langle Y_{o,e}X_{o,e}^T,\xi_e\rangle.
-\]
-The full-rank conditions make $U_o$ injective: left inverses of $P_{o,e}$ and $Q_{o,e}$ recover $x_e$ from its image. The two zero cross-Gram conditions imply $u_o\circ U_o=0$. We have therefore supplied all the data needed for the general edge definition.
+The initial random variable is therefore a tuple of frame matrices. The coefficient space, moment spaces, $a,T$, and $E$ are fixed before drawing these tuples. In particular, the matrix $E$ alone does not specify the graph: adjacency also depends on $V,a,T$.
 
 \subsection{The sampled graph and the remaining theorem}
 Sample
@@ -235,7 +233,7 @@ On the positions $1,\ldots,m$, put $ij\in E(G)$ exactly when $o_i,o_j$ satisfy t
 The initial random variable is the tuple of frame matrices $o$, not a Boolean point $(s,z)$. The monomial list and moment spaces are fixed globally. Boolean points vary when constructing witnesses; sampling point parameters with the frames fixed is called a query in the manuscript.
 \end{remark}
 
-Triangle-freeness of $G$, and hence $\alpha(H)\le2$, holds for every sample. The harder assertion is that $\cm(H)<m/100$ with probability $1-\exp(-\Omega(m))$ (Proposition~3.4). To obtain it, the manuscript calls an ordered pair of raw vertices that are nonadjacent in $G$ a \emph{unit}; such a pair represents an edge of $H$ when placed at distinct sampled positions. Two units conflict if all four cross pairs are edges of $G$, so no edge of $H$ joins their endpoint sets. Their corresponding edges therefore cannot coexist in a connected matching.
+Triangle-freeness of $G$, and hence $\alpha(H)\le2$, holds for every sample. The harder assertion is that $\cm(H)<m/100$ with probability $1-\exp(-\Omega(m))$ (Proposition~3.4). To obtain it, the manuscript calls an ordered pair of raw vertices that do not satisfy the edge criterion a \emph{unit}; such a pair represents an edge of $H$ when placed at distinct sampled positions. Two units conflict if all four cross pairs are edges of $G$, so no edge of $H$ joins their endpoint sets. Their corresponding edges therefore cannot coexist in a connected matching.
 
 Theorem~3.1 asserts that every law $\sigma$ on units satisfying the pointwise density bounds
 \[
@@ -255,16 +253,21 @@ h(H)\le \frac{m+4\cm(H)+2}{3}.
 \end{proposition}
 
 \begin{proof}
-(Idea) Write $c=\cm(H),\,b=h(H)$. Thus that there are $b$ pairwise disjoint, nonempty connected vertex sets, with an edge joining every pair of sets.
-These sets are the branch sets of a $K_b$ minor. Let $s$ be the number of sets with one vertex and $e$ be the number of sets with two vertices.
+Write $c=\cm(H)$ and $b=h(H)$. A $K_b$ minor model consists of $b$ disjoint nonempty connected branch sets, with an edge joining every pair. Let $s$ be the number of singleton branch sets and $e$ the number of two-vertex branch sets.
 
-Firstly $c>e+\frac{s-1}{2}$:
-Each two-vertex branch set has an edge. And pairs of singleton branches supports an edge, the set of them is a connected matching, so we have the desired inequality. 
-
-Then every remaining branch set has at least three vertices. Since the branch sets are disjoint,
+Each two-vertex branch set supplies an edge. The singleton vertices form a clique, so pairing them supplies $\lfloor s/2\rfloor$ more edges. Together these form a connected matching, since every pair of its edges is joined by an edge of $H$. Thus
+\[
+c\ge e+\left\lfloor\frac{s}{2}\right\rfloor,
+\qquad s\le2(c-e)+1.
+\]
+Every remaining branch set has at least three vertices, so
 \[
 m\ge s+2e+3(b-s-e)=3b-2s-e.
 \]
-Combining two inequality give use the contradiction.
+Consequently,
+\[
+3b\le m+2s+e\le m+4c-3e+2\le m+4c+2,
+\]
+which proves the claim.
 \end{proof}
 \end{document}
