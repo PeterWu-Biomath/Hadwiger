@@ -52,30 +52,30 @@
 	\]
 	Thus $h(\bar G)<\chi(\bar G)$, contrary to Hadwiger's conjecture.
 \section{The construction}
-\subsection{Triangle-free graphs from linear algebra}
+\subsection{Triangle-free graphs from linear algebra}\label{sec:2.1}
 We first describe the general linear-algebraic scheme and then specify the data used in the manuscript. All vector spaces, ranks, and matrix operations are over $\mathbb F_2$.
 
-Let $X,Y$ be finite-dimensional vector spaces. Fix $a\in X^*$ and a symmetric bilinear form $T:X\times X\to\mathbb F_2$, and put
+Let $V,W$ be finite-dimensional vector spaces. Fix $a\in V^*$ and a symmetric bilinear form $T:V\times V\to\mathbb F_2$, and put
 \[
-r(\lambda)=a+T(\lambda,\cdot)\in X^*.
+r(\lambda)=a+T(\lambda,\cdot)\in V^*.
 \]
-Let $V$ be the set of vertices. For each element $v\in V$, assign an injective linear map $U_v:X\to Y$ and a linear functional $u_v\in Y^*$. Then we can define the associated graph:
+Let $\Omega$ be the set of vertices. For each $o\in\Omega$, assign an injective linear map $U_o:V\to W$ and a linear functional $u_o\in W^*$. Then we can define the associated graph:
 
 \begin{defn}
-Two elements $i,j\in V$ is connected if there exist $\lambda_i,\lambda_j\in X$ such that
+Two vertices $i,j\in\Omega$ are adjacent if there exist $\lambda_i,\lambda_j\in V$ such that
 \begin{align}
 U_i\lambda_i&=U_j\lambda_j,\label{eq:shared}\\
 u_j\circ U_i&=r(\lambda_i),\qquad u_i\circ U_j=r(\lambda_j),\label{eq:cross}\\
 a(\lambda_i)+a(\lambda_j)&=1.\label{eq:parity}
 \end{align}
-Equation~\eqref{eq:cross} is an equality in $X^*$.
+Equation~\eqref{eq:cross} is an equality in $V^*$.
 \end{defn}
 
 \begin{lemma}
-The associated graph is triangle-free.
+The associated graph is loopless and triangle-free.
 \end{lemma}
 \begin{proof}
-	
+	Loopless is guaranteed by injectivity of $U$ and (\ref{eq:parity}).
 Suppose $i,j,k$ is a triangle. Write $\lambda_{ij}$ for the $\lambda_i$ at $i$ for the pair $ij$.  Evaluate (\ref{eq:cross}) on $\lambda_{ik}$:
 \[
 u_j(U_i \lambda_{ik})=a(\lambda_{ik})+T(\lambda_{ij},\lambda_{ik}).
@@ -87,51 +87,87 @@ Then sum six equations by permuting $i,j,k$. For fixed $j$, the two terms on the
 whereas the left-hand side is zero, a contradiction.
 \end{proof}
 
-\subsection{Parameters and Boolean moment spaces}
-The remaining task is to choose the data so that $\bar G$ also has small connected matching number. The manuscript fixes
+\subsection{Parameters}
+Starting from the number of vertices $m$ that is large enough. The manuscript fixes
 \[
 C_0=1000,\qquad g=10^9+1,\qquad D=4C_0g,\qquad M=2^{1000}.
 \]
-The constants $b,j_*,J,r_0,M_0$ are chosen in the dependency order of Appendix~A of the manuscript, independently of $n$. Set
+And there are constants $b,j_*,J,r_0,M_0$ are chosen in Appendix~A of the manuscript, independently of $m$ but not sepcified.
+
+Set
 \[
-h=1000r_0,\qquad N=M_0n,\qquad m=2^{C_0gN},
+h=1000r_0,\qquad N=M_0n,\qquad m=2^{C_0gN}.
 \]
-and take $n$ sufficiently large, in particular $n\ge2r_0$ and $j_*\ge1$. The auxiliary rank and tolerance budgets used to choose these constants belong to the proof; they are not additional random variables attached to vertices.
+So we will use $n\rightarrow\infty$ as pivotal variable afterwards.
+\subsection{Boolean moment spaces}
 
 Let
 \[
 I=\mathbb Z/g\mathbb Z,\quad \mathcal E=\binom I2,\quad
 I_d=\{d+1,\ldots,d+(g-1)/2\}\subset I.
 \]
-Elements of $I$ are tags and elements of $\mathcal E$ are components. A Boolean point consists of a selector $s\in\mathbb F_2^b$ and base coordinates $z$ in $g^2+3$ blocks of $n$ bits:
+Elements of $I$ are \emph{tags} and elements of $\mathcal E$ are \emph{components}. A \emph{Boolean point} consists of a \emph{selector} $s\in\mathbb F_2^b$ and \emph{base coordinates} $z$ in $g^2+3$ blocks of $n$ bits:
 \[
-O_{d,t}\ (d,t\in I),\qquad S,\qquad \#,\qquad Z.
+z=\bigl((z_{O_{d,t}})_{d,t\in I},\ z_S,\ z_{\#},\ z_Z\bigr)
+\in(\mathbb F_2^n)^{g^2+3}.
 \]
+For each block label $A\in\{O_{d,t}:d,t\in I\}\cup\{S,\#,Z\}$, write
+\[
+z_A=(z_{A,1},\ldots,z_{A,n})\in\mathbb F_2^n.
+\]
+Thus $z$ has $g^2+3$ blocks, each containing $n$ bits; $z_{A,k}$ denotes the $k$th bit in block $A$.
 Write
 \[
 p_* =\sum_{j=0}^{j_*}\binom bj,\qquad
 B=\mathbb F_2^{p_*}\otimes\mathbb F_2^{1+(g^2+3)n}.
 \]
-Let $p_s$ list the evaluations of all squarefree selector monomials of degree at most $j_*$. Define the evaluation vector and its point moment by
+Let $p(s)\in\mathbb F_2^{p_*}$ be the bit vector listing the evaluations at $s$ of all squarefree selector monomials of degree at most $j_*$, in a fixed order. Define the evaluation vector and its point moment by
 \[
-v(s,z)=p_s\otimes(1,z),\qquad w(s,z)=v(s,z)v(s,z)^T.
+v(s,z)=p(s)\otimes(1,z),\qquad w(s,z)=v(s,z)\otimes v(s,z).
 \]
 Let $W\subseteq B\otimes B$ be the span of all point moments. For $\ell\in I$, let $W_\ell$ be the span of those point moments whose base values satisfy $O_{d,t}=0$ whenever $\ell\notin I_d$. Let $W_*$ be the span obtained by setting all $O$-blocks to zero.
 
-The witness space is the cut-profile space
+Define the linear cut-profile map
 \[
-X=\left\{(x_{\{\ell,\ell'\}})_{\{\ell,\ell'\}\in\mathcal E}:
-x_{\{\ell,\ell'\}}=w_\ell+w_{\ell'},\quad w_\ell\in W_\ell\right\}.
+\begin{aligned}
+f:\bigoplus_{\ell\in I}W_\ell&\longrightarrow\bigoplus_{e\in\mathcal E}W,\\
+(w_\ell)_{\ell\in I}&\longmapsto
+\bigl(w_\ell+w_{\ell'}\bigr)_{\{\ell,\ell'\}\in\mathcal E}.
+\end{aligned}
 \]
-Thus $x$ is a tuple of matrices, and $(w_\ell)_{\ell\in I}$ is a representation of $x$. Two representations differ by a constant tuple with value in $W_*$ (Lemma~2.3 of the manuscript).
+The \emph{witness space} is $X=\operatorname{im}f$. A tuple $(w_\ell)_{\ell\in I}$ is a representation of $x\in X$ if $f((w_\ell)_{\ell\in I})=x$. By Lemma~2.3 of the manuscript,
+\[
+\ker f=\{(w_*)_{\ell\in I}:w_*\in W_*\},
+\]
+that is, two representations of the same $x$ differ by a constant tuple with value in $W_*$.
 
-\subsection{The fixed functional and bilinear form}
-Define linear testers on moments by selecting ordered matrix entries:
+\subsection{The $V$, $W$, $T$ and $a$}
+We can now identify the two vector spaces from Section~\ref{sec:2.1}. To distinguish their roles from the notation used in the concrete construction, write them as $V_{\S 2.1}$ and $W_{\S 2.1}$:
+\[
+V_{\S 2.1}=X=\operatorname{im}f,\qquad
+W_{\S 2.1}=\bigoplus_{e\in\mathcal E}V_e^+\otimes V_e^-,
+\qquad V_e^\pm=\mathbb F_2^N.
+\]
+The first is the witness space: its elements are tuples of $d_B\times d_B$ matrices satisfying the cut-profile condition, where $d_B=\dim B$. The second is the ambient space: its elements are tuples of $N\times N$ matrices. A vertex $o$ will determine an embedding
+\[
+U_o:V_{\S 2.1}\longrightarrow W_{\S 2.1},\qquad
+x\longmapsto(P_{o,e}x_eQ_{o,e}^T)_{e\in\mathcal E},
+\]
+using the frame matrices defined in the next subsection. 
+
+\begin{remark}
+	The $W_{\S 2.1}$ is not the moment space $W\subseteq B\otimes B$ defined above; the ambient space is denoted by $V$ later in the concrete construction.
+
+\end{remark}
+So here we are ready to define $T\in Sym^2(X^{*})$ and $a\in X^*$.
+Define \emph{linear testers} on moments by selecting ordered matrix entries:
 \begin{align*}
-\eta_{d,t}(w(s,z))&=\sum_{\rho=1}^{r_0}z_{O_{d,t},2\rho-1}z_{O_{d,t},2\rho},\\
+\eta_{d,t}(w(s,z))&=\sum_{\rho=1}^{r_0}z_{O_{d,t},2\rho-1}z_{O_{d,t},2\rho},\,d,t\in I\\
 \eta_S(w(s,z))&=\sum_{\rho=1}^{r_0}z_{S,2\rho-1}z_{S,2\rho}.
 \end{align*}
-Put $\eta_O=\sum_{d,t}\eta_{d,t}$ and $\eta=\eta_O+\eta_S$. For a cut profile represented by $(w_\ell)$, set
+Put $\eta_O=\sum_{d,t}\eta_{d,t}$ and $\eta=\eta_O+\eta_S$. They should be understood as taking value in $W^*$. 
+
+For a cut profile $x$ represented by $(w_\ell)$, set
 \[
 a_t(x)=\sum_{\ell,d}\eta_{d,t}(w_\ell),\qquad
 a(x)=\sum_t a_t(x),\qquad
@@ -150,7 +186,7 @@ B_1(x,y)&=\sum_{j=1}^J\sum_{e,f\in\mathcal E}
 \left\langle x_e,L_j^{ef}y_f(R_j^{ef})^T\right\rangle,\\
 T_1(x,y)&=B_1(x,y)+B_1(y,x),\qquad T=T_0+T_1.
 \end{align*}
-Then $T$ is symmetric and $T(x,x)=a(x)$. This specifies $r(\lambda)=a+T(\lambda,\cdot)$ in the hole relation.
+Then $T$ is symmetric and $T(x,x)=a(x)$. This specifies $r(\lambda)=a+T(\lambda,\cdot)$ in the edge definition.
 
 The prescribed self-frame matrix $E$ is also fixed. Let $E_\eta$ be the sum of the ordered tester matrices, so $\langle E_\eta,w\rangle=\eta(w)$ for $w\in W$. Choose $n\times n$ matrices $M_1,\ldots,M_b$ along with the mixers as in Lemma~5.5, and define $E_\#$ by
 \[
@@ -185,7 +221,7 @@ Identifying tensors with matrices, define
 U_o(x)=(P_{o,e}x_eQ_{o,e}^T)_{e\in\mathcal E},\qquad
 u_o(\xi)=\sum_{e\in\mathcal E}\langle Y_{o,e}X_{o,e}^T,\xi_e\rangle.
 \]
-The full-rank conditions make $U_o$ injective: left inverses of $P_{o,e}$ and $Q_{o,e}$ recover $x_e$ from its image. The two zero cross-Gram conditions imply $u_o\circ U_o=0$. We have therefore supplied all the data needed for the general hole relation.
+The full-rank conditions make $U_o$ injective: left inverses of $P_{o,e}$ and $Q_{o,e}$ recover $x_e$ from its image. The two zero cross-Gram conditions imply $u_o\circ U_o=0$. We have therefore supplied all the data needed for the general edge definition.
 
 \subsection{The sampled graph and the remaining theorem}
 Sample
@@ -193,13 +229,13 @@ Sample
 o_1,\ldots,o_m\ \overset{\mathrm{iid}}{\sim}\ \mu_n,
 \qquad m=2^{C_0gN}.
 \]
-On the positions $1,\ldots,m$, put $ij\in E(G)$ exactly when $o_i,o_j$ satisfy the hole criterion~\eqref{eq:shared}--\eqref{eq:parity}; put $ij\in E(H)$ otherwise. This completes the definition of the random graph. Its edges are determined by the sampled frames, with no further independent edge sampling.
+On the positions $1,\ldots,m$, put $ij\in E(G)$ exactly when $o_i,o_j$ satisfy the edge criterion~\eqref{eq:shared}--\eqref{eq:parity}; put $ij\in E(H)$ otherwise. This completes the definition of the random graph. Its edges are determined by the sampled frames, with no further independent edge sampling.
 
 \begin{remark}
 The initial random variable is the tuple of frame matrices $o$, not a Boolean point $(s,z)$. The monomial list and moment spaces are fixed globally. Boolean points vary when constructing witnesses; sampling point parameters with the frames fixed is called a query in the manuscript.
 \end{remark}
 
-Triangle-freeness of $G$, and hence $\alpha(H)\le2$, holds for every sample. The harder assertion is that $\cm(H)<m/100$ with probability $1-\exp(-\Omega(m))$ (Proposition~3.4). To obtain it, the manuscript calls an ordered raw pair with no hole a \emph{unit}. Two units conflict if all four cross pairs are holes, so their corresponding edges cannot coexist in a connected matching.
+Triangle-freeness of $G$, and hence $\alpha(H)\le2$, holds for every sample. The harder assertion is that $\cm(H)<m/100$ with probability $1-\exp(-\Omega(m))$ (Proposition~3.4). To obtain it, the manuscript calls an ordered pair of raw vertices that are nonadjacent in $G$ a \emph{unit}; such a pair represents an edge of $H$ when placed at distinct sampled positions. Two units conflict if all four cross pairs are edges of $G$, so no edge of $H$ joins their endpoint sets. Their corresponding edges therefore cannot coexist in a connected matching.
 
 Theorem~3.1 asserts that every law $\sigma$ on units satisfying the pointwise density bounds
 \[

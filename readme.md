@@ -1,6 +1,11 @@
 # Notes on Hadwiger's conjecture
 
-Personal reading notes by Pei Wu on the manuscript *A counterexample to Hadwiger's conjecture*, attributed to OpenAI.
+Personal reading notes on the manuscript *A counterexample to Hadwiger's conjecture*, attributed to OpenAI.
+
+- The authors tend to use nonstandard terminology. For example, "holes" actually means "edges in the complement graph." They also use terms from other fields, such as "witness" and "certificate." These may be familiar to theoretical computer scientists, but I need to make an extra effort to understand what they mean in this context. Other terms, such as "demand" and "pin budget," were unclear to me when I first encountered them.
+- In its proofs, the AI does not clearly distinguish between trivial steps and those that need emphasis. This makes the text lengthy and the central ideas hard to grasp.
+
+The goal is to address these shortcomings and produce a clearer manuscript.
 
 ## Contents
 
