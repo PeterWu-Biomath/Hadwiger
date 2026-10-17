@@ -120,7 +120,56 @@ Moreover,
 u_o(U_o(x))=\sum_{e\in\mathcal E}
 \operatorname{Tr}\bigl(X_{o,e}Y_{o,e}^TP_{o,e}x_eQ_{o,e}^T\bigr)=0,
 \]
-since $Y_{o,e}^TP_{o,e}=0$. 
+since $Y_{o,e}^TP_{o,e}=0$.
+\subsubsection{A model for uniformly generating quadruples} 
+Set $k=d_B+h$, and combine the columns into
+\[
+A=[P\;X],\qquad B=[Q\;Y]\in\operatorname{Mat}_{N,k}(\mathbb F_2).
+\]
+The constraints say that $A,B$ have full column rank and
+\[
+A^TB=H_C,\qquad
+H_C=\begin{pmatrix}E&0\\0&C\end{pmatrix},\qquad
+C\in\operatorname{Mat}_h(\mathbb F_2).
+\]
+Here $C=X^TY$ is unrestricted. The letter $B$ in this subsection denotes the combined minus frame, not the coefficient space introduced later.
+
+First fix a full-column-rank $A$. Choose a right inverse $D$ of $A^T$ and a matrix $K$ whose columns form a basis of $\ker A^T$:
+\[
+D\in\operatorname{Mat}_{N,k}(\mathbb F_2),\qquad
+K\in\operatorname{Mat}_{N,N-k}(\mathbb F_2),\qquad
+A^TD=I_k,\quad A^TK=0.
+\]
+Both can be obtained by Gaussian elimination, using a fixed rule for each $A$. Every matrix satisfying the linear constraints has a unique expression
+\[
+\boxed{B=DH_C+KZ},\qquad
+C\in\operatorname{Mat}_h(\mathbb F_2),\quad
+Z\in\operatorname{Mat}_{N-k,k}(\mathbb F_2).
+\]
+Indeed, $A^TB=H_C$ and the remaining columns lie in $\ker A^T$. Since $[D\;K]$ is invertible,
+\[
+\operatorname{rank}B=k
+\quad\Longleftrightarrow\quad
+\operatorname{rank}\begin{pmatrix}H_C\\Z\end{pmatrix}=k
+\quad\Longleftrightarrow\quad
+Z|_{\ker H_C}\text{ is injective}.
+\]
+Thus the linear equations have disappeared, leaving only an injectivity condition on the directions not detected by $H_C$.
+
+To sample uniformly, use the following procedure:
+\begin{enumerate}
+\item Sample $A$ uniformly among full-column-rank matrices in $\operatorname{Mat}_{N,k}(\mathbb F_2)$, and compute $D,K$.
+\item Sample $C$ and $Z$ with independent uniform binary entries. If the stacked matrix above does not have rank $k$, resample both $C$ and $Z$, keeping $A$ fixed.
+\item Set $B=DH_C+KZ$ and split $A=[P\;X]$ and $B=[Q\;Y]$ at column $d_B$.
+\end{enumerate}
+For each $A$, the correspondence between accepted pairs $(C,Z)$ and admissible minus frames $B$ is bijective. Moreover, the acceptance condition depends only on $C,Z,E$, not on $A$, so every full-rank $A$ has the same number of admissible completions. Consequently the resulting quadruple is uniform among all admissible quadruples. Repeat this procedure independently over components.
+
+The rejection step has a uniformly bounded expected cost. For fixed $C$, let $t=\dim\ker H_C$. The restriction of a uniform $Z$ to this kernel is a uniform $(N-k)\times t$ matrix, so its probability of being injective is
+\[
+\prod_{j=0}^{t-1}\bigl(1-2^{j-(N-k)}\bigr),
+\]
+with the empty product equal to one. Since $t\le k\le N-k$, this probability is at least $1/4$: it is bounded below by $\prod_{r=1}^{\infty}(1-2^{-r})$, whose first two factors give $3/8$ and whose remaining product is at least $1-\sum_{r=3}^{\infty}2^{-r}=3/4$. Thus fewer than four trials are needed on average. Importantly, fixing a uniformly sampled $C$ and resampling only $Z$ would generally give a different law, because the acceptance probability depends on $\operatorname{rank}C$.
+
 \subsection{Parameters}
 The only asymptotic parameter is $n$. The manuscript fixes
 \[
@@ -241,6 +290,106 @@ Theorem~3.1 asserts that every law $\sigma$ on units satisfying the pointwise de
 \sigma\le2^{DN}(\mu_n\otimes\mu_n)
 \]
 gives a conflict between two independent $\sigma$-units with probability at least $2^{-100gN}$. The endpoints within one unit may be dependent. An entropy-based container argument transfers this statement to the sampled graph. Thus the construction above specifies the graph; the subsequent distribution theorem and container argument establish the small connected matching number needed for the counterexample.
+\section{From Theorem 3.1 to the counterexample}
+\label{sec:containers}
+Assume Theorem~3.1 of the manuscript. We explain how it implies that the sampled graph $H=\bar G$ has $\cm(H)<m/100$ with probability $1-\exp(-\Omega(m))$. Throughout this section write $\Omega=\mathcal O_n$, $\mu=\mu_n$, and $\mu^2=\mu\otimes\mu$.
+
+\subsection{The distribution theorem and the conflict graph}
+Let $\mathcal U\subseteq\Omega^2$ be the set of units: ordered pairs that do not satisfy the edge criterion for $G$. Define a conflict graph $\Gamma$ on $\mathcal U$, joining $(a_1,a_2)$ to $(b_1,b_2)$ when all four cross pairs $a_ib_j$ satisfy that criterion. This graph has no loops, since a unit cannot conflict with itself. A connected matching of $H$, after orienting its edges, gives an independent set of unit types in $\Gamma$. Different matching edges may have the same type; we keep track of their occurrences in the sample separately.
+
+For a probability law $\sigma$ on units, its marginals are
+\[
+\sigma_1(a)=\sum_b\sigma(a,b),\qquad
+\sigma_2(b)=\sum_a\sigma(a,b).
+\]
+Call $\sigma$ feasible if the following inequalities hold pointwise:
+\begin{equation}
+\sigma_1\le M\mu,\qquad \sigma_2\le M\mu,\qquad
+\sigma\le2^{DN}\mu^2.
+\label{eq:feasible-law}
+\end{equation}
+These are upper bounds on concentration, rather than distances between probability laws. Theorem~3.1 says that two independent draws from any feasible law conflict with probability at least
+\[
+\varepsilon=2^{-100gN}.
+\]
+The law need not be uniform, and its two endpoints need not be independent.
+
+\subsection{Containers obtained by deleting conflicts}
+Fix an independent set $I\subseteq\mathcal U$. Start with the residual family $R=\mathcal U$. Whenever $R$ supports a feasible law, choose one, denoted $\rho_R$, minimizing relative entropy with respect to $\mu^2$:
+\[
+\mathcal D(\rho_R\Vert\mu^2)
+=\sum_{a,b}\rho_R(a,b)\log\frac{\rho_R(a,b)}{\mu(a)\mu(b)}.
+\]
+Here logarithms are natural and zero summands are omitted. By Theorem~3.1,
+\[
+\sum_{v\in R}\rho_R(v)\rho_R(N_R(v))\ge\varepsilon,
+\]
+where $N_R(v)$ is the conflict neighborhood of $v$ in $R$. Choose $v$ maximizing $\rho_R(N_R(v))$, so this mass is at least $\varepsilon$. Make all choices deterministic, using a fixed ordering to break ties.
+
+If $v\in I$, record $v$ and delete $N_R(v)$; if $v\notin I$, delete $v$ alone. Both steps preserve $I\subseteq R$. Stop when no feasible law remains. The recorded units form a fingerprint, and the terminal family $R$ is its container.
+
+The entropy bound limits the number of recordings. Every feasible law has
+\[
+0\le\mathcal D(\rho\Vert\mu^2)\le DN\log2.
+\]
+The information-projection inequality of Lemma~3.2 says that, after a recording which leaves a feasible residual family, the minimum entropy increases by at least $-\log(1-\varepsilon)$. Indeed, the old minimizer assigns mass at most $1-\varepsilon$ to the new residual family, and the new law is supported there. Other deletions cannot decrease the minimum entropy. Allowing one final recording that destroys feasibility, the number of recordings is at most
+\[
+L_N=1+\left\lceil\frac{DN\log2}{-\log(1-\varepsilon)}\right\rceil
+=O(N2^{100gN}).
+\]
+The fingerprint determines the terminal family by replaying the deterministic procedure: a selected unit is recorded exactly when it belongs to the fingerprint. A previously recorded unit has no remaining conflict neighbors and cannot be selected again while feasibility holds.
+
+There are at most $2^{2|\mathcal E|N(d_B+h)}$ raw vertices, so $\log|\mathcal U|=O(N^2)$. Hence the number of containers is at most $(|\mathcal U|+1)^{L_N}$, whose logarithm is
+\[
+O(N^3 2^{100gN})=o(m),\qquad m=2^{1000gN}.
+\]
+Thus every independent set lies in one of $\exp(o(m))$ terminal containers, all determined before the graph sample is drawn.
+
+\subsection{A terminal container has rare endpoints or rare pairs}
+If a family $R$ supports no feasible law, Lemma~3.3 gives sets $S\subseteq\Omega$ and $E_0\subseteq\Omega^2$ such that
+\[
+\mu(S)<1/M,\qquad \mu^2(E_0)<2^{-DN},
+\]
+and each $(a,b)\in R$ has $a\in S$, $b\in S$, or $(a,b)\in E_0$.
+
+To see why, put a left and a right copy of $\Omega$ in a flow network. Give the edges from the source to left $a$ capacity $M\mu(a)$, those from right $b$ to the sink capacity $M\mu(b)$, and the edge from left $a$ to right $b$ capacity $2^{DN}\mu(a)\mu(b)$ whenever $(a,b)\in R$. A flow of value one is precisely a feasible law. If none exists, a cut of capacity less than one supplies sets $L_0,R_0\subseteq\Omega$ with
+\[
+M\mu(L_0)+M\mu(R_0)
++2^{DN}\mu^2\bigl(R\cap((\Omega\setminus L_0)\times(\Omega\setminus R_0))\bigr)<1.
+\]
+Take $S=L_0\cup R_0$ and let $E_0$ be the pair set in the last term. This proves the asserted cover and measure bounds.
+
+\subsection{The random sample excludes large connected matchings}
+Fix one terminal container and its sets $S,E_0$, and put $k=\lceil m/200\rceil$. For independent sampled positions $o_1,\ldots,o_m$, the probability that at least $k$ lie in $S$ is at most
+\[
+\binom{m}{k}\mu(S)^k
+\le\left(\frac{\mathrm e m}{kM}\right)^k
+\le(200\mathrm e/M)^k
+=\exp(-\Omega(m)).
+\]
+Here $\mathrm e$ is Euler's number. A fixed collection of $k$ disjoint ordered position pairs consists of independent $\mu^2$ draws. The probability they all belong to $E_0$ is at most $2^{-DNk}$. There are at most $m^{2k}$ such collections, so
+\[
+\Pr(\text{$k$ disjoint sampled pairs lie in }E_0)
+\le m^{2k}2^{-DNk}
+=2^{(2C_0g-D)Nk}
+=2^{-2C_0gNk}.
+\]
+Taking a union bound over the $\exp(o(m))$ containers, with probability $1-\exp(-\Omega(m))$ every container has fewer than $m/200$ sampled positions in $S$ and fewer than $m/200$ disjoint sampled pairs in $E_0$.
+
+Suppose on this event that $H$ has a connected matching of size at least $m/100$. Orient its edges. Their unit types form an independent set in $\Gamma$, so they belong to a terminal container. Because the matching uses disjoint positions, fewer than $m/200$ of its edges can meet that container's sampled positions in $S$. All remaining edges belong to $E_0$, and there are fewer than $m/200$ of those as well. This contradicts the assumed matching size. Therefore
+\[
+\cm(H)<m/100.
+\]
+No assumption that the uniform law on the matching itself is feasible is needed: the container procedure applies to its independent set of types regardless.
+
+Finally, $\alpha(H)\le2$ holds for every sample. Applying Appendix~\ref{app:minor-bound}, for $m\ge5$ we obtain
+\[
+h(H)\le\frac{m+4\cm(H)+2}{3}
+<\frac{26m}{75}+\frac23
+<\frac m2\le\chi(H).
+\]
+Thus Theorem~3.1 implies that the construction produces a counterexample with probability $1-\exp(-\Omega(m))$ for all sufficiently large $n$.
+
 \appendix
 \section{The clique-minor bound (Proposition 3.5)}
 \label{app:minor-bound}
