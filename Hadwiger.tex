@@ -51,6 +51,21 @@
 	\le \chi(\bar G).
 	\]
 	Thus $h(\bar G)<\chi(\bar G)$, contrary to Hadwiger's conjecture.
+	
+In summary, we seek a triangle-free graph $G=(V_G,E_G)$ on $m$ vertices with the following property. Define an auxiliary conflict graph $\widetilde G$ whose vertices are ordered nonedges of $G$:
+\[
+\widetilde V=\{(a,b)\in V_G^2:a\ne b,\ \{a,b\}\notin E_G\}.
+\]
+Two distinct vertices $(a_1,a_2),(b_1,b_2)\in\widetilde V$ are adjacent in $\widetilde G$ precisely when at least one of the following holds:
+\begin{enumerate}
+\item Their pairs share an endpoint: $\{a_1,a_2\}\cap\{b_1,b_2\}\ne\varnothing$.
+\item All four cross pairs are edges of $G$:
+\[
+\{a_i,b_j\}\in E_G\qquad\text{for all }i,j\in\{1,2\}.
+\]
+\end{enumerate}
+Our target is the independence number of $\tilde{G}$ is less than $m/100$. 
+
 \section{The construction}
 \subsection{Triangle-free graphs from linear algebra}\label{sec:2.1}
 We first describe the general linear-algebraic scheme and then specify the data used in the manuscript. All vector spaces, ranks, and matrix operations are over $\mathbb F_2$.
@@ -85,6 +100,8 @@ Then sum six equations by permuting $i,j,k$. For fixed $j$, the two terms on the
 \sum_{\{i,j\}}\bigl(a(\lambda_{ij})+a(\lambda_{ji})\bigr)=1+1+1=1,
 \]
 whereas the left-hand side is zero, a contradiction.
+
+
 \end{proof}
 \subsection{Construction of $U$ and $u$}\label{sec:frames}
 Write $\operatorname{Mat}_{m,n}(\mathbb F_2)$ for the space of $m\times n$ binary matrices, and $\operatorname{Mat}_n(\mathbb F_2)=\operatorname{Mat}_{n,n}(\mathbb F_2)$. Fix a finite index set $\mathcal E$, positive integers $N,d_B,h$ with $N\ge2(d_B+h)$, and a matrix $E\in\operatorname{Mat}_{d_B}(\mathbb F_2)$, to be specified later. Take
@@ -290,99 +307,123 @@ Theorem~3.1 asserts that every law $\sigma$ on units satisfying the pointwise de
 \sigma\le2^{DN}(\mu_n\otimes\mu_n)
 \]
 gives a conflict between two independent $\sigma$-units with probability at least $2^{-100gN}$. The endpoints within one unit may be dependent. An entropy-based container argument transfers this statement to the sampled graph. Thus the construction above specifies the graph; the subsequent distribution theorem and container argument establish the small connected matching number needed for the counterexample.
-\section{From Theorem 3.1 to the counterexample}
-\label{sec:containers}
-Assume Theorem~3.1 of the manuscript. We explain how it implies that the sampled graph $H=\bar G$ has $\cm(H)<m/100$ with probability $1-\exp(-\Omega(m))$. Throughout this section write $\Omega=\mathcal O_n$, $\mu=\mu_n$, and $\mu^2=\mu\otimes\mu$.
+\section{An abstract container lemma}
+\label{sec:abstract-containers}
+The container argument does not depend on the linear-algebraic construction. Its inputs are a finite probability space, a family of ordered pairs, and a graph describing which pairs conflict.
 
-\subsection{The distribution theorem and the conflict graph}
-Let $\mathcal U\subseteq\Omega^2$ be the set of units: ordered pairs that do not satisfy the edge criterion for $G$. Define a conflict graph $\Gamma$ on $\mathcal U$, joining $(a_1,a_2)$ to $(b_1,b_2)$ when all four cross pairs $a_ib_j$ satisfy that criterion. This graph has no loops, since a unit cannot conflict with itself. A connected matching of $H$, after orienting its edges, gives an independent set of unit types in $\Gamma$. Different matching edges may have the same type; we keep track of their occurrences in the sample separately.
-
-For a probability law $\sigma$ on units, its marginals are
+\begin{lemma}[Containers for pairs with bounded densities]
+\label{lem:pair-containers}
+Let $\Omega$ be a finite set with a strictly positive probability measure $\mu$, let $\mathcal U\subseteq\Omega^2$, and let $\Gamma$ be a finite simple graph on $\mathcal U$. Fix $\alpha,\beta\ge1$ and $0<\varepsilon<1$. Write $\mu^2=\mu\otimes\mu$, and call a probability law $\rho$ on $\mathcal U$ feasible if
 \[
-\sigma_1(a)=\sum_b\sigma(a,b),\qquad
-\sigma_2(b)=\sum_a\sigma(a,b).
+\rho_1\le\alpha\mu,\qquad \rho_2\le\alpha\mu,\qquad
+\rho\le\beta\mu^2
 \]
-Call $\sigma$ feasible if the following inequalities hold pointwise:
+pointwise, where $\rho_1,\rho_2$ are its endpoint marginals. Suppose every feasible law satisfies
+\[
+\Pr_{v,w\,\mathrm{iid}\sim\rho}(vw\in E(\Gamma))\ge\varepsilon.
+\]
+Set
+\[
+L=1+\left\lceil\frac{\log\beta}{-\log(1-\varepsilon)}\right\rceil.
+\]
+Then there is a family $\mathcal C$ of at most $(|\mathcal U|+1)^L$ subsets of $\mathcal U$ such that:
+\begin{enumerate}
+\item Every independent set of $\Gamma$ is contained in some $C\in\mathcal C$.
+\item Each $C\in\mathcal C$ has associated sets $S_C\subseteq\Omega$ and $F_C\subseteq\Omega^2$ with
+\[
+\mu(S_C)<\alpha^{-1},\qquad \mu^2(F_C)<\beta^{-1},
+\]
+\[
+C\subseteq(S_C\times\Omega)\cup(\Omega\times S_C)\cup F_C.
+\]
+\end{enumerate}
+Moreover, sample $z_1,\ldots,z_m$ independently with law $\mu$. For any integer $1\le k\le m$, the probability that there exist $2k$ ordered pairs of sampled positions, all using distinct positions, whose types lie in $\mathcal U$ and form an independent set in $\Gamma$, is at most
 \begin{equation}
-\sigma_1\le M\mu,\qquad \sigma_2\le M\mu,\qquad
-\sigma\le2^{DN}\mu^2.
-\label{eq:feasible-law}
+(|\mathcal U|+1)^L
+\left[\binom{m}{k}\alpha^{-k}+m^{2k}\beta^{-k}\right].
+\label{eq:abstract-sampling-bound}
 \end{equation}
-These are upper bounds on concentration, rather than distances between probability laws. Theorem~3.1 says that two independent draws from any feasible law conflict with probability at least
-\[
-\varepsilon=2^{-100gN}.
-\]
-The law need not be uniform, and its two endpoints need not be independent.
+Repeated pair types are allowed; independence concerns their set of distinct types. Logarithms in this lemma are natural.
+\end{lemma}
 
-\subsection{Containers obtained by deleting conflicts}
-Fix an independent set $I\subseteq\mathcal U$. Start with the residual family $R=\mathcal U$. Whenever $R$ supports a feasible law, choose one, denoted $\rho_R$, minimizing relative entropy with respect to $\mu^2$:
+\begin{proof}
+\emph{Entropy increase.}
+For a residual family $R\subseteq\mathcal U$ supporting a feasible law, let $\rho_R$ minimize
 \[
-\mathcal D(\rho_R\Vert\mu^2)
-=\sum_{a,b}\rho_R(a,b)\log\frac{\rho_R(a,b)}{\mu(a)\mu(b)}.
+\mathcal D(\rho\Vert\mu^2)=\sum_{v\in\mathcal U}\rho(v)\log\frac{\rho(v)}{\mu^2(v)}
 \]
-Here logarithms are natural and zero summands are omitted. By Theorem~3.1,
+among feasible laws supported on $R$. The feasible set is compact and convex, so a minimizer exists. Its support contains the support of every feasible law on $R$: otherwise mixing in such a law gives a negative infinite right derivative at a missing coordinate, contradicting minimality. Differentiating along a segment towards any feasible $\nu$ therefore yields the information-projection inequality
+\[
+\mathcal D(\nu\Vert\mu^2)\ge
+\mathcal D(\rho_R\Vert\mu^2)+\mathcal D(\nu\Vert\rho_R).
+\]
+If $\nu$ is supported on $R'\subseteq R$, then
+\[
+\mathcal D(\nu\Vert\rho_R)\ge-\log\rho_R(R').
+\]
+Thus deleting a set of $\rho_R$-mass at least $\varepsilon$ increases the minimum entropy by at least $-\log(1-\varepsilon)$, provided feasibility remains. Every feasible law has entropy between zero and $\log\beta$.
+
+\emph{The container procedure.}
+Fix an independent set $I$. Start with $R=\mathcal U$. While feasibility remains, choose a vertex $v\in R$ maximizing $\rho_R(N_R(v))$, making choices deterministic. The hypothesis implies
 \[
 \sum_{v\in R}\rho_R(v)\rho_R(N_R(v))\ge\varepsilon,
 \]
-where $N_R(v)$ is the conflict neighborhood of $v$ in $R$. Choose $v$ maximizing $\rho_R(N_R(v))$, so this mass is at least $\varepsilon$. Make all choices deterministic, using a fixed ordering to break ties.
+so the selected neighborhood has mass at least $\varepsilon$. If $v\in I$, record $v$ and delete $N_R(v)$; otherwise delete $v$. Each operation preserves $I\subseteq R$ and removes at least one vertex. Stop when $R$ supports no feasible law.
 
-If $v\in I$, record $v$ and delete $N_R(v)$; if $v\notin I$, delete $v$ alone. Both steps preserve $I\subseteq R$. Stop when no feasible law remains. The recorded units form a fingerprint, and the terminal family $R$ is its container.
+Each recording that leaves feasibility increases the minimum entropy by at least $-\log(1-\varepsilon)$; all other deletions cannot decrease it. Allowing one final recording, there are at most $L$ recorded vertices. Their set determines the terminal family by replaying the procedure, recording a selected vertex precisely when it is in this set. A previously recorded vertex has no remaining neighbors, and cannot be selected again while feasibility holds. Hence at most
+\[
+\sum_{j=0}^{\min(L,|\mathcal U|)}\binom{|\mathcal U|}{j}
+\le(|\mathcal U|+1)^L
+\]
+terminal containers occur.
 
-The entropy bound limits the number of recordings. Every feasible law has
+\emph{Covering a terminal family.}
+For a terminal $C$, put a left and a right copy of $\Omega$ in a flow network. Give source-to-left edges capacity $\alpha\mu(a)$, right-to-sink edges capacity $\alpha\mu(b)$, and the edge from left $a$ to right $b$ capacity $\beta\mu(a)\mu(b)$ whenever $(a,b)\in C$. A flow of value one is exactly a feasible law on $C$. Therefore the maximum flow is less than one. A minimum cut gives sets $L_0,R_0\subseteq\Omega$ with
 \[
-0\le\mathcal D(\rho\Vert\mu^2)\le DN\log2.
+\alpha\mu(L_0)+\alpha\mu(R_0)
++\beta\mu^2\bigl(C\cap((\Omega\setminus L_0)\times(\Omega\setminus R_0))\bigr)<1.
 \]
-The information-projection inequality of Lemma~3.2 says that, after a recording which leaves a feasible residual family, the minimum entropy increases by at least $-\log(1-\varepsilon)$. Indeed, the old minimizer assigns mass at most $1-\varepsilon$ to the new residual family, and the new law is supported there. Other deletions cannot decrease the minimum entropy. Allowing one final recording that destroys feasibility, the number of recordings is at most
-\[
-L_N=1+\left\lceil\frac{DN\log2}{-\log(1-\varepsilon)}\right\rceil
-=O(N2^{100gN}).
-\]
-The fingerprint determines the terminal family by replaying the deterministic procedure: a selected unit is recorded exactly when it belongs to the fingerprint. A previously recorded unit has no remaining conflict neighbors and cannot be selected again while feasibility holds.
+Take $S_C=L_0\cup R_0$ and
+$F_C=C\cap((\Omega\setminus L_0)\times(\Omega\setminus R_0))$.
+These satisfy the claimed cover and measure bounds. Fix one such choice for each container.
 
-There are at most $2^{2|\mathcal E|N(d_B+h)}$ raw vertices, so $\log|\mathcal U|=O(N^2)$. Hence the number of containers is at most $(|\mathcal U|+1)^{L_N}$, whose logarithm is
-\[
-O(N^3 2^{100gN})=o(m),\qquad m=2^{1000gN}.
-\]
-Thus every independent set lies in one of $\exp(o(m))$ terminal containers, all determined before the graph sample is drawn.
+\emph{Sampling.}
+For a fixed container, the probability that at least $k$ sampled positions lie in $S_C$ is at most $\binom{m}{k}\alpha^{-k}$. A fixed collection of $k$ disjoint ordered position pairs consists of independent $\mu^2$ draws, so the probability that all its types lie in $F_C$ is at most $\beta^{-k}$. There are at most $m^{2k}$ such collections.
 
-\subsection{A terminal container has rare endpoints or rare pairs}
-If a family $R$ supports no feasible law, Lemma~3.3 gives sets $S\subseteq\Omega$ and $E_0\subseteq\Omega^2$ such that
-\[
-\mu(S)<1/M,\qquad \mu^2(E_0)<2^{-DN},
-\]
-and each $(a,b)\in R$ has $a\in S$, $b\in S$, or $(a,b)\in E_0$.
+Outside these two exceptional events, fewer than $k$ sampled positions lie in $S_C$, and fewer than $k$ disjoint sampled pairs lie in $F_C$. Any collection of disjoint position pairs whose types lie in $C$ then has at most $2k-2$ members: at most $k-1$ meet $S_C$, and at most $k-1$ others lie in $F_C$. In particular it cannot have $2k$ members. Every independent set lies in a container, so a union bound proves~\eqref{eq:abstract-sampling-bound}.
+\end{proof}
 
-To see why, put a left and a right copy of $\Omega$ in a flow network. Give the edges from the source to left $a$ capacity $M\mu(a)$, those from right $b$ to the sink capacity $M\mu(b)$, and the edge from left $a$ to right $b$ capacity $2^{DN}\mu(a)\mu(b)$ whenever $(a,b)\in R$. A flow of value one is precisely a feasible law. If none exists, a cut of capacity less than one supplies sets $L_0,R_0\subseteq\Omega$ with
-\[
-M\mu(L_0)+M\mu(R_0)
-+2^{DN}\mu^2\bigl(R\cap((\Omega\setminus L_0)\times(\Omega\setminus R_0))\bigr)<1.
-\]
-Take $S=L_0\cup R_0$ and let $E_0$ be the pair set in the last term. This proves the asserted cover and measure bounds.
+\section{Applying the lemma to Theorem 3.1}
+\label{sec:containers}
+Take $\Omega=\mathcal O_n$, $\mu=\mu_n$, and let $\mathcal U$ be the ordered pairs that do not satisfy the edge criterion for $G$. Define $\Gamma$ by joining two pairs when all four cross pairs satisfy that criterion. Orienting a connected matching of $H=\bar G$ gives disjoint ordered position pairs whose types form an independent set of $\Gamma$.
 
-\subsection{The random sample excludes large connected matchings}
-Fix one terminal container and its sets $S,E_0$, and put $k=\lceil m/200\rceil$. For independent sampled positions $o_1,\ldots,o_m$, the probability that at least $k$ lie in $S$ is at most
+Theorem~3.1 of the manuscript is exactly the hypothesis of Lemma~\ref{lem:pair-containers} with
 \[
-\binom{m}{k}\mu(S)^k
-\le\left(\frac{\mathrm e m}{kM}\right)^k
-\le(200\mathrm e/M)^k
-=\exp(-\Omega(m)).
+\alpha=M=2^{1000},\qquad \beta=2^{DN},\qquad
+\varepsilon=2^{-100gN}.
 \]
-Here $\mathrm e$ is Euler's number. A fixed collection of $k$ disjoint ordered position pairs consists of independent $\mu^2$ draws. The probability they all belong to $E_0$ is at most $2^{-DNk}$. There are at most $m^{2k}$ such collections, so
-\[
-\Pr(\text{$k$ disjoint sampled pairs lie in }E_0)
-\le m^{2k}2^{-DNk}
-=2^{(2C_0g-D)Nk}
-=2^{-2C_0gNk}.
-\]
-Taking a union bound over the $\exp(o(m))$ containers, with probability $1-\exp(-\Omega(m))$ every container has fewer than $m/200$ sampled positions in $S$ and fewer than $m/200$ disjoint sampled pairs in $E_0$.
+Here $\sigma_1(a)=\sum_b\sigma(a,b)$ and $\sigma_2(b)=\sum_a\sigma(a,b)$ are the two endpoint marginals. The theorem applies to every law satisfying the bounds, not just uniform laws. No feasibility assumption on the empirical law of a matching is required.
 
-Suppose on this event that $H$ has a connected matching of size at least $m/100$. Orient its edges. Their unit types form an independent set in $\Gamma$, so they belong to a terminal container. Because the matching uses disjoint positions, fewer than $m/200$ of its edges can meet that container's sampled positions in $S$. All remaining edges belong to $E_0$, and there are fewer than $m/200$ of those as well. This contradicts the assumed matching size. Therefore
+The fingerprint bound is $L=O(N2^{100gN})$. Since
+\[
+|\Omega|\le2^{2|\mathcal E|N(d_B+h)},\qquad
+\log(|\mathcal U|+1)=O(N^2),
+\]
+the number of containers is $\exp(O(N^3 2^{100gN}))=\exp(o(m))$, where $m=2^{C_0gN}$ and $C_0=1000$.
+
+Set $k=\lceil m/200\rceil$. For each container, the endpoint exception in the sampling proof has probability at most
+\[
+\binom{m}{k}M^{-k}\le(200\mathrm e/M)^k=\exp(-\Omega(m)),
+\]
+and the pair exception has probability at most
+\[
+m^{2k}2^{-DNk}=2^{(2C_0g-D)Nk}=2^{-2C_0gNk}.
+\]
+Here $\mathrm e$ is Euler's number and $D=4C_0g$. A union bound over $\exp(o(m))$ containers shows that, with probability $1-\exp(-\Omega(m))$, every collection of disjoint position pairs with independent types has at most $2k-2<m/100$ members, by the stronger bound in the sampling proof. Consequently
 \[
 \cm(H)<m/100.
 \]
-No assumption that the uniform law on the matching itself is feasible is needed: the container procedure applies to its independent set of types regardless.
-
-Finally, $\alpha(H)\le2$ holds for every sample. Applying Appendix~\ref{app:minor-bound}, for $m\ge5$ we obtain
+The deterministic bound $\alpha(H)\le2$ gives $\chi(H)\ge m/2$. By Appendix~\ref{app:minor-bound}, for $m\ge5$,
 \[
 h(H)\le\frac{m+4\cm(H)+2}{3}
 <\frac{26m}{75}+\frac23
