@@ -35,3 +35,7 @@ pdflatex Hadwiger.tex
 ```
 
 The `.aux`, `.log`, and `.synctex.gz` files are generated during compilation.
+
+## Note (2026/10/27)
+
+The construction remains beyond my current understanding, and I do not plan to return to this project in the near future. My main takeaway is that Theorem 3.1 is the key result. A possible starting point for simplifying the construction would be to find a simpler probability distribution on vertices, together with an edge rule, for which an analogue of Theorem 3.1 holds.
